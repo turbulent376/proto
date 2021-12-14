@@ -1,5 +1,5 @@
 .PHONY = proto
-SERVICES = billing auth license report storage notification location timesheet lesson
+SERVICES = activity auth
 
 proto:
 	@for srv in $(SERVICES); do \

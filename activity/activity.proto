@@ -1,145 +1,152 @@
 syntax = "proto3";
 
-package timesheet;
+package activity;
 import "google/protobuf/timestamp.proto";
-option go_package = "proto/timesheet";
+option go_package = "proto/activity";
 
-// Timesheet represents timesheet object
-message Timesheet {
+// Activity represents activity object
+message Activity {
   // Id - unique identifier
   string Id = 1;
   // Owner - sample owner
   string Owner = 2;
+  // Typ - type owner
+  string Type = 3;
+  // Family - sample family
+  string Family = 4;
   //DateFrom
-  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateFrom = 5;
   //DateTo
-  google.protobuf.Timestamp DateTo = 4;
+  google.protobuf.Timestamp DateTo = 6;
 }
 
-// Event represents event object
-message Event {
+// ActivityType represents activityType object
+message ActivityType {
   // Id - unique identifier
   string Id = 1;
-  // TimesheetId - timesheet id
-  string TimesheetId = 2;
-  // Subject - sample subject
-  string Subject = 3;
-  // WeekDay - day of the lesson
-  string WeekDay = 4;
-  // TimeStart lesson start time
-  google.protobuf.Timestamp TimeStart = 5;
-  // TimeEnd lesson start time
-  google.protobuf.Timestamp TimeEnd = 6;
+  // Family - family id
+  string Family = 2;
+  // Name - name type
+  string Name = 3;
+  // Description - description of the type
+  string Description = 4;
 }
 
 // Request to create a new sample
-message CreateTimesheetRequest {
+message CreateActivityRequest {
   // Owner - sample owner
   string Owner = 1;
+  // Typ - type owner
+  string Type = 2;
+  // Family - sample family
+  string Family = 3;
   //DateFrom
-  google.protobuf.Timestamp DateFrom = 2;
+  google.protobuf.Timestamp DateFrom = 4;
   //DateTo
-  google.protobuf.Timestamp DateTo = 3;
+  google.protobuf.Timestamp DateTo = 5;
 }
 
 // request to update sample
-message UpdateTimesheetRequest {
+message UpdateActivityRequest {
   // Id - unique identifier
   string Id = 1;
   // Owner - sample owner
   string Owner = 2;
+  // Typ - type owner
+  string Type = 3;
+  // Family - sample family
+  string Family = 4;
   //DateFrom
-  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateFrom = 5;
   //DateTo
-  google.protobuf.Timestamp DateTo = 4;
+  google.protobuf.Timestamp DateTo = 6;
 }
 
-message SearchTimesheetRequest {
+message ListActivitiesRequest {
   //Owner - name
   string Owner = 1;
-  //DateFrom
-  google.protobuf.Timestamp DateFromSearch = 2;
-  //DateTo
-  google.protobuf.Timestamp DateToSearch = 3;
+}
+
+message ListActivitiesByFamilyRequest {
+  //Owner - name
+  string Family = 1;
 }
 
 // request with sample id
-message TimesheetIdRequest {
+message ActivityIdRequest {
   // Id - unique identifier
   string Id = 1;
 }
 
 // Request to create a new sample
-message CreateEventRequest {
-  // Id - unique identifier
-  string Id = 1;
-  // TimesheetId - timesheet id
-  string TimesheetId = 2;
-  // Subject - sample subject
-  string Subject = 3;
-  // WeekDay - day of thr lesson
-  string WeekDay = 4;
-  // TimeStart
-  google.protobuf.Timestamp TimeStart = 5;
-  // TimeEnd
-  google.protobuf.Timestamp TimeEnd = 6;
+message CreateActivityTypeRequest {
+  // Family - family id
+  string Family = 1;
+  // Name - name type
+  string Name = 2;
+  // Description - description of the type
+  string Description = 3;
 }
 
 // request to update sample
-message UpdateEventRequest {
+message UpdateActivityTypeRequest {
   // Id - unique identifier
   string Id = 1;
-  // TimesheetId - timesheet id
-  string TimesheetId = 2;
-  // Subject - sample subject
-  string Subject = 3;
-  // WeekDay - day of thr lesson
-  string WeekDay = 4;
-  // TimeStart
-  google.protobuf.Timestamp TimeStart = 5;
-  // TimeEnd
-  google.protobuf.Timestamp TimeEnd = 6;
+  // Family - family id
+  string Family = 2;
+  // Name - name type
+  string Name = 3;
+  // Description - description of the type
+  string Description = 4;
 }
 
 // request with sample id
-message EventIdRequest {
+message ActivityTypeIdRequest {
   string Id = 1;
 }
 
 // request with sample timesheet id
-message EventsIdRequest {
-  string TimesheetId = 1;
+message ListActivityTypesRequest {
+  string Family = 1;
 }
 
 // SearchResponse represents result of sample search
-message SearchResponse  {
+message ListActivitiesResponse  {
   // Samples - list of samples found
-  repeated Event Events = 1;
+  repeated Activity Activities = 1;
+}
+
+// SearchResponse represents result of sample search
+message ListActivityTypesResponse  {
+  // Samples - list of samples found
+  repeated ActivityType ActyvityTypes = 1;
 }
 
 // empty response
 message EmptyResponse {}
 
 // SampleService allows manipulating with samples
-service TimesheetService {
+service ActivityService {
   // Create creates a new sample
-  rpc Create(CreateTimesheetRequest) returns (Timesheet) {}
-  // Update updates an existent consultant
-  rpc Update(UpdateTimesheetRequest) returns (Timesheet) {}
+  rpc Create(CreateActivityRequest) returns (Activity) {}
+  // Update updates an existent sample
+  rpc Update(UpdateActivityRequest) returns (Activity) {}
   // Get retrieves a sample by id
-  rpc Get(TimesheetIdRequest) returns (Timesheet) {}
-  // Search retrieves a sample by owner
-  rpc Search(SearchTimesheetRequest) returns (Timesheet) {}
+  rpc Get(ActivityIdRequest) returns (Activity) {}
+  // Search retrieves samples by owner
+  rpc ListActivities(ListActivitiesRequest) returns (ListActivitiesResponse) {}
+  // Search retrieves samples by family
+  rpc ListActivitiesByFamily(ListActivitiesByFamilyRequest) returns (ListActivitiesResponse) {}
   // Delete sample
-  rpc Delete(TimesheetIdRequest) returns (EmptyResponse) {}
+  rpc Delete(ActivityIdRequest) returns (EmptyResponse) {}
   // Create creates a new sample
-  rpc CreateEvent(CreateEventRequest) returns (Event) {}
-  // Update updates an existent consultant
-  rpc UpdateEvent(UpdateEventRequest) returns (Event) {}
+  rpc CreateActivityType(CreateActivityTypeRequest) returns (ActivityType) {}
+  // Update updates an existent sample
+  rpc UpdateActivityType(UpdateActivityTypeRequest) returns (ActivityType) {}
   // Get retrieves a sample by id
-  rpc GetEvent(EventIdRequest) returns (Event) {}
+  rpc GetActivityType(ActivityTypeIdRequest) returns (ActivityType) {}
   // Search searches samples
-  rpc SearchEvents(EventIdRequest) returns (SearchResponse) {}
+  rpc ListActivityTypes(ListActivityTypesRequest) returns (ListActivityTypesResponse) {}
   // Delete sample
-  rpc DeleteEvent(EventIdRequest) returns (EmptyResponse) {}
+  rpc DeleteActivityType(ActivityTypeIdRequest) returns (EmptyResponse) {}
 }
